@@ -1,0 +1,23 @@
+---
+
+GET https://httpbun.org/get
+
+---
+POST https://httpbun.org/post
+Accept: */*
+Content-type: application/json
+Authorization: Bearer xxxx
+
+{"foo": "bar"}
+
+---
+
+PUT https://httpbun.org/put
+
+Content-type: text/plain
+Authorization: Bearer xxxx
+Accept: text/plain
+
+Req 3
+
+---
