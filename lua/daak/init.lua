@@ -1,5 +1,6 @@
 local http = require("daak.http")
-local parser = require("daak.parser")
+local tg_parser = require("daak.parser.text_group")
+local http_parser = require("daak.parser.http")
 local utils = require("daak.utils")
 
 local M = {
@@ -41,9 +42,9 @@ M.run_request_under_cursor = function()
 	-- get all lines of the current buffer
 	local buf_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 	-- group buffer lines into text objects (parser first-pass)
-	local grouped = parser.parse_text_group(buf_lines)
+	local grouped = tg_parser.parse_text_group(buf_lines)
 	-- find out which text object user's cursor is on
-	local selected_idx = parser.find_group(grouped, user_cur_line)
+	local selected_idx = tg_parser.find_group(grouped, user_cur_line)
 	if selected_idx == nil then
 		utils.notify("No request object found under cursor", vim.log.levels.WARN)
 		return
@@ -53,7 +54,7 @@ M.run_request_under_cursor = function()
 	-- now we know which text object, let's try to parse this text as HTTP request..
 	-- (parser second-pass)
 	local raw_lines = { unpack(buf_lines, object.start + 1, object.fin - 1) }
-	local req = parser.parse_http_req(raw_lines)
+	local req = http_parser.parse_http_req(raw_lines)
 	http.make_req(req, function(res)
 		-- open a mini window with the response and the request
 		open_result_win(req, res)
@@ -61,7 +62,7 @@ M.run_request_under_cursor = function()
 end
 
 M.setup = function()
-	vim.keymap.set("n", "<leader>mr", M.run_request_under_cursor)
+	vim.keymap.set("n", "<leader>dr", M.run_request_under_cursor)
 end
 
 return M
