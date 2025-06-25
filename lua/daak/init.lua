@@ -55,6 +55,12 @@ M.run_request_under_cursor = function()
 	-- (parser second-pass)
 	local raw_lines = { unpack(buf_lines, object.start + 1, object.fin - 1) }
 	local req = http_parser.parse_http_req(raw_lines)
+	if req == nil then
+		utils.notify("Error parsing HTTP request", vim.log.levels.ERROR)
+		return
+	end
+
+	-- if all good, execute the http request
 	http.make_req(req, function(res)
 		-- open a mini window with the response and the request
 		open_result_win(req, res)
