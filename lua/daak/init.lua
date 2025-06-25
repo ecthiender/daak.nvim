@@ -1,7 +1,6 @@
 local http = require("daak.http")
 local parser = require("daak.parser")
 local utils = require("daak.utils")
-local stream = require("daak.stream")
 
 local M = {
 	__result_buf = nil,
