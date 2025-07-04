@@ -1,6 +1,9 @@
-# 🚧 daak.nvim - the original postman 🚧
+# daak.nvim - the original postman
 
-🚧  WORK IN PROGRESS! 🚧
+> [!WARNING]
+> #### 🚧  WORK IN PROGRESS 🚧
+> This repo is currently work in progress. Various features may be functionally
+> incomplete. And obviously, there will be bugs.
 
 daak.nvim is a simple neovim plugin to make HTTP and GraphQL requests. You don't
 have to leave your editor, and you can fully edit, manipulate, inspect request
