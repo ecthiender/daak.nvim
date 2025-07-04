@@ -134,10 +134,11 @@ function M.parse_http_req(raw_lines)
 	}
 end
 
-function M.parse_split_parts_response(lines)
-	vim.print(lines)
+function M.parse_split_parts_response(liness)
+	local lines = utils.split(liness, "\n")
 	local s = stream:new({ inner = lines })
-	-- Step 1: first line has to status
+	-- Step 1: first line has to be status
+	s:skip_many_empty()
 	local status = s:get()
 	if status == nil then
 		vim.schedule(function()
@@ -145,33 +146,29 @@ function M.parse_split_parts_response(lines)
 		end)
 		return
 	end
-	print("Raw response status:")
-	vim.print(status)
+	status = utils.trim(status)
 
 	-- Step 2: can be any number of headers
 	local headers = {}
-	while s:next() ~= "" do
-		local line = s:get()
+	local curr_line = s:next()
+	while curr_line ~= "" and curr_line ~= nil and curr_line ~= "\r" do
+		local line = utils.trim(curr_line)
 		table.insert(headers, line)
+		curr_line = s:next()
 	end
-	print("Raw response headers:")
-	vim.print(headers)
 
-	-- Step 3: response body if any
+	-- -- Step 3: response body if any
 	local response = {}
 	while s:next() ~= nil do
 		local line = s:get()
+		line = utils.trim(line)
 		table.insert(response, line)
 	end
-	print("Raw response body:")
-	vim.print(response)
 	return {
 		status = status,
 		headers = headers,
 		response = response,
 	}
-	-- if line == "" or line == "\r" or line == "\n" or line == "\r\n" then
-	-- TODO: finish this..
 end
 
 return M
