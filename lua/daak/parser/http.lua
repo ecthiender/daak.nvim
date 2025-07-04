@@ -11,16 +11,6 @@ local M = {}
 --- HTTP request parts are made. The first text object is parsed as HTTP method (GET, POST etc.) and URL;
 --- the second text object is parsed as headers, and the third text object is parsed as body.
 
-local function parse_split_parts_response(lines)
-	local s = stream:new({ inner = lines })
-	-- Step 1: first line has to status
-	local status = s:next()
-	-- Step 2: can be any number of headers
-	--
-	-- if line == "" or line == "\r" or line == "\n" or line == "\r\n" then
-	-- TODO: finish this..
-end
-
 -- Parse and split into 3 parts based on variable whitespace
 local function parse_split_parts(lines)
 	local input = stream:new({ inner = lines })
@@ -142,6 +132,46 @@ function M.parse_http_req(raw_lines)
 		headers = headers,
 		body = body,
 	}
+end
+
+function M.parse_split_parts_response(lines)
+	vim.print(lines)
+	local s = stream:new({ inner = lines })
+	-- Step 1: first line has to status
+	local status = s:get()
+	if status == nil then
+		vim.schedule(function()
+			utils.notify("Parsing response failed. No status line", vim.log.levels.ERROR)
+		end)
+		return
+	end
+	print("Raw response status:")
+	vim.print(status)
+
+	-- Step 2: can be any number of headers
+	local headers = {}
+	while s:next() ~= "" do
+		local line = s:get()
+		table.insert(headers, line)
+	end
+	print("Raw response headers:")
+	vim.print(headers)
+
+	-- Step 3: response body if any
+	local response = {}
+	while s:next() ~= nil do
+		local line = s:get()
+		table.insert(response, line)
+	end
+	print("Raw response body:")
+	vim.print(response)
+	return {
+		status = status,
+		headers = headers,
+		response = response,
+	}
+	-- if line == "" or line == "\r" or line == "\n" or line == "\r\n" then
+	-- TODO: finish this..
 end
 
 return M

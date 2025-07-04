@@ -35,7 +35,9 @@ local function open_result_win(req, output)
 	end, { buffer = true })
 end
 
---- Read the text under user's cursor, and if it matches daak.nvim's HTTP spec, it is executed as a request, and its response displayed in a separate popup window.
+--- Read the text under user's cursor, and if it matches daak.nvim's HTTP spec,
+--- it is executed as a request, and its response displayed in a separate popup
+---- window.
 M.run_request_under_cursor = function()
 	-- get user's current line
 	local user_cur_line, _ = unpack(vim.api.nvim_win_get_cursor(0))
@@ -62,13 +64,18 @@ M.run_request_under_cursor = function()
 
 	-- if all good, execute the http request
 	http.make_req(req, function(res)
+		local response_parts = http_parser.parse_split_parts_response(res)
+		print("response parts result:")
+		vim.print(response_parts)
 		-- open a mini window with the response and the request
 		open_result_win(req, res)
 	end)
 end
 
 M.setup = function()
-	vim.keymap.set("n", "<leader>dr", M.run_request_under_cursor)
+	vim.keymap.set("n", "<leader>dr", M.run_request_under_cursor, {
+		desc = "Run request under cursor",
+	})
 end
 
 return M
