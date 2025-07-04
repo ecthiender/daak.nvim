@@ -12,3 +12,29 @@ in any buffer, from where you can execute the request. This means, you can have
 a collection of requests saved in a file, which you can open and start executing
 requests, or you can open up a scratch buffer, type in the request and execute
 it.
+
+## Install
+
+### Using Lazy
+
+```lua
+return {
+  {
+    "ecthiender/daak.nvim",
+    config = function()
+      require("daak").setup()
+    end,
+  },
+}
+```
+
+## Usage
+
+Create text in any open buffer of HTTP spec format. Check the `test.txt` file
+for examples.
+
+Each text group separated by the separator (`---`) is considered a separate
+HTTP request object.
+
+To execute a request, place the cursor anywhere inside a HTTP request object,
+and press `<leader>dr`.
