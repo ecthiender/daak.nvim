@@ -18,7 +18,7 @@ it.
 ### Using Lazy
 
 ```lua
-return {
+{
   {
     "ecthiender/daak.nvim",
     config = function()
