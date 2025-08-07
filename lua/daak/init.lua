@@ -7,6 +7,7 @@ local M = {
 	__result_win = nil,
 }
 
+-- Open a new window with the response and request to pretty print it..
 local function open_result_win(req, res)
 	M.__result_buf = vim.api.nvim_create_buf(false, true)
 	local buf_result = { "daak.nvim - the original postman." }
@@ -28,6 +29,12 @@ local function open_result_win(req, res)
 		split = "below",
 		win = 0,
 	}
+
+	-- Make the buffer not modifiable
+	vim.api.nvim_set_option_value("modifiable", false, { buf = M.__result_buf })
+	-- Optionally set the 'readonly' flag for the buffer
+	vim.api.nvim_set_option_value("readonly", true, { buf = M.__result_buf })
+
 	M.__result_win = vim.api.nvim_open_win(M.__result_buf, false, opts)
 	vim.api.nvim_set_current_win(M.__result_win)
 
